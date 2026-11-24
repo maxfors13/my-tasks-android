@@ -1,0 +1,10 @@
+{
+  "name": "Мои дела — по локациям",
+  "short_name": "Мои дела",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#111318",
+  "theme_color": "#111318",
+  "lang": "ru",
+  "icons": []
+}

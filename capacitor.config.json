@@ -1,0 +1,6 @@
+{
+  "appId": "ru.max.tasks",
+  "appName": "Мои дела",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}

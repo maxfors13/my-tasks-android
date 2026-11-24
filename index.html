@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111318">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Мои дела</title>
+<style>
+:root{color-scheme:dark;--bg:#111318;--panel:#1a1d24;--panel2:#222630;--line:#2c313c;--muted:#9299a8;--text:#f2f4f8;--accent:#d9ff62;--red:#ff5b61;--yellow:#ffc857;--green:#53d69a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+button,input{font:inherit}button{cursor:pointer;color:inherit;border:0}
+.app{max-width:760px;margin:auto;min-height:100dvh;padding:calc(22px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}
+.eyebrow{color:var(--muted);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+h1{font-size:30px;letter-spacing:-.04em;margin:4px 0 0;font-weight:750}
+.header-count{background:#252a33;border:1px solid var(--line);border-radius:14px;padding:9px 12px;color:var(--muted);font-size:13px}
+.header-count b{color:var(--text);font-size:17px;margin-right:4px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin:24px 0 13px}
+h2{font-size:16px;margin:0;font-weight:650}.sub{font-size:13px;color:var(--muted);margin-top:3px}
+.add{background:var(--accent);color:#151810;border-radius:12px;padding:10px 14px;font-weight:750}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.loc{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;text-align:left;min-height:132px;display:flex;flex-direction:column;justify-content:space-between;transition:.15s}
+.loc:active,.task:active{transform:scale(.985)}
+.loc-top{display:flex;justify-content:space-between;align-items:center}
+.loc-icon{width:38px;height:38px;border-radius:12px;background:#292f39;display:grid;place-items:center;font-size:19px}
+.more{color:var(--muted);background:transparent;font-size:21px;padding:0 4px}
+.loc-name{font-weight:700;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.loc-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:4px}
+.progress{height:3px;background:#303641;border-radius:4px;margin-top:11px;overflow:hidden}.progress i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.back{background:transparent;color:var(--muted);padding:0;margin:0 0 16px;font-size:14px}
+.location-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.location-head h2{font-size:24px;letter-spacing:-.03em}
+.task-list{display:flex;flex-direction:column;gap:9px}
+.task{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:13px 12px;display:flex;align-items:center;gap:11px}
+.check{appearance:none;width:21px;height:21px;border:1.5px solid #596171;border-radius:7px;flex:0 0 21px;margin:0;display:grid;place-items:center}
+.check:checked{background:var(--accent);border-color:var(--accent)}.check:checked:after{content:"✓";color:#151810;font-size:14px;font-weight:900}
+.task-text{flex:1;min-width:0}.task-title{font-size:15px;overflow-wrap:anywhere}.task.done .task-title{text-decoration:line-through;color:#747c8b}
+.task-note{font-size:12px;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}
+.priority{display:flex;gap:5px;align-items:center;padding:5px 2px;background:transparent}
+.dot{width:11px;height:11px;border-radius:50%;opacity:.28;box-shadow:0 0 0 0 transparent}
+.dot.red{background:var(--red)}.dot.yellow{background:var(--yellow)}.dot.green{background:var(--green)}
+.dot.active{opacity:1;box-shadow:0 0 0 4px #ffffff12}
+.empty{border:1px dashed #343a46;border-radius:16px;padding:26px 18px;text-align:center;color:var(--muted);font-size:14px}
+.bottom-note{font-size:11px;color:#687080;text-align:center;margin-top:24px}
+.modal-back{position:fixed;inset:0;background:#0009;display:none;align-items:flex-end;justify-content:center;padding:12px;z-index:5}
+.modal-back.show{display:flex}
+.modal{width:min(100%,520px);background:#1b1f27;border:1px solid #343a46;border-radius:22px;padding:20px;box-shadow:0 18px 60px #0008}
+.modal h3{margin:0 0 16px;font-size:19px}
+.field{display:block;width:100%;background:#11151b;border:1px solid #343a46;border-radius:12px;padding:13px;color:var(--text);outline:none;margin:8px 0 12px}
+.field:focus{border-color:#a8c84d}
+.label{font-size:12px;color:var(--muted)}
+.modal-actions{display:flex;gap:9px;margin-top:18px}.modal-actions button{flex:1;border-radius:12px;padding:12px;font-weight:650;background:#2b303a}.modal-actions .primary{background:var(--accent);color:#151810}
+.modal-actions .danger{color:#ff777c}
+.priority-choices{display:flex;gap:8px;margin:9px 0 4px}
+.priority-choices button{flex:1;padding:10px 4px;border-radius:10px;background:#11151b;border:1px solid #343a46;color:var(--muted);font-size:13px}
+.priority-choices button.selected{border-color:#aab0ba;color:var(--text);background:#2a303a}
+@media(min-width:560px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.modal-back{align-items:center}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><div class="eyebrow">ЛИЧНЫЙ ОРГАНАЙЗЕР</div><h1 id="pageTitle">Мои дела</h1></div><div class="header-count"><b id="openCount">0</b>активных</div></header>
+<main id="main"></main>
+<div class="bottom-note">Данные хранятся на этом устройстве</div>
+</div>
+<div class="modal-back" id="modalBack"><section class="modal" role="dialog" aria-modal="true"><div id="modalContent"></div></section></div>
+<script>
+const KEY='my-tasks-v1';
+const defaults=[
+ {id:'home',name:'Дом',icon:'⌂',tasks:[]},
+ {id:'car',name:'Машина',icon:'🚘',tasks:[]},
+ {id:'container',name:'Контейнер',icon:'▣',tasks:[]}
+];
+let data=load(),current=null,editing=null,formPriority='green';
+function load(){try{const v=JSON.parse(localStorage.getItem(KEY));return Array.isArray(v)?v:defaults}catch{return defaults}}
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function totalOpen(){return data.reduce((n,l)=>n+l.tasks.filter(t=>!t.done).length,0)}
+function render(){document.getElementById('openCount').textContent=totalOpen();if(current===null)renderLocations();else renderTasks()}
+function renderLocations(){
+ document.getElementById('pageTitle').textContent='Мои дела';
+ const main=document.getElementById('main');
+ main.innerHTML=`<div class="toolbar"><div><h2>Локации</h2><div class="sub">Выбери место, чтобы открыть список</div></div><button class="add" onclick="openLocation()">＋ Добавить</button></div><div class="grid">${data.map(l=>{let open=l.tasks.filter(t=>!t.done).length,all=l.tasks.length,done=all-open;return `<button class="loc" onclick="enter('${l.id}')"><div class="loc-top"><span class="loc-icon">${esc(l.icon||'◈')}</span><span class="more" onclick="event.stopPropagation();locationMenu('${l.id}')">···</span></div><div><div class="loc-name">${esc(l.name)}</div><div class="loc-meta"><span>${open} активных</span><span>${done}/${all}</span></div><div class="progress"><i style="width:${all?done/all*100:0}%"></i></div></div></button>`}).join('')}</div>${data.length?'':'<div class="empty">Пока нет локаций. Добавь первую.</div>'}`;
+}
+function enter(id){current=id;render()}
+function renderTasks(){
+ const l=data.find(x=>x.id===current);if(!l){current=null;render();return}
+ document.getElementById('pageTitle').textContent=l.name;
+ const main=document.getElementById('main');
+ const rank={red:0,yellow:1,green:2};
+ const tasks=[...l.tasks].sort((a,b)=>(a.done-b.done)||(rank[a.priority]-rank[b.priority])||(b.created-a.created));
+ main.innerHTML=`<button class="back" onclick="current=null;render()">← Все локации</button><div class="location-head"><div><h2>${esc(l.name)}</h2><div class="sub">${l.tasks.filter(t=>!t.done).length} активных · ${l.tasks.length} всего</div></div><button class="add" onclick="openTask()">＋ Дело</button></div><div class="task-list">${tasks.map(t=>`<div class="task ${t.done?'done':''}"><input class="check" type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}')"><div class="task-text" onclick="openTask('${t.id}')"><div class="task-title">${esc(t.title)}</div>${t.note?`<div class="task-note">${esc(t.note)}</div>`:''}</div><button class="priority" title="Изменить важность" onclick="cyclePriority('${t.id}')"><i class="dot red ${t.priority==='red'?'active':''}"></i><i class="dot yellow ${t.priority==='yellow'?'active':''}"></i><i class="dot green ${t.priority==='green'?'active':''}"></i></button><button class="more" onclick="openTask('${t.id}')">···</button></div>`).join('')||'<div class="empty">Здесь пока пусто.<br>Добавь первое дело.</div>'}</div>`;
+}
+function toggleTask(id){let t=data.find(l=>l.id===current).tasks.find(t=>t.id===id);t.done=!t.done;save()}
+function cyclePriority(id){let t=data.find(l=>l.id===current).tasks.find(t=>t.id===id);t.priority=({red:'yellow',yellow:'green',green:'red'})[t.priority];save()}
+function showModal(content){document.getElementById('modalContent').innerHTML=content;document.getElementById('modalBack').classList.add('show')}
+function closeModal(){document.getElementById('modalBack').classList.remove('show')}
+document.getElementById('modalBack').addEventListener('click',e=>{if(e.target.id==='modalBack')closeModal()});
+function openLocation(id=null){
+ const l=id?data.find(x=>x.id===id):null;
+ showModal(`<h3>${l?'Изменить локацию':'Новая локация'}</h3><label class="label">Название</label><input class="field" id="locName" maxlength="40" placeholder="Например, Мастерская" value="${l?esc(l.name):''}"><label class="label">Значок (необязательно)</label><input class="field" id="locIcon" maxlength="4" placeholder="⌂ / 🚘 / ▣" value="${l?esc(l.icon||''):''}"><div class="modal-actions">${l ? `<button class="danger" onclick="deleteLocation('${l.id}')">Удалить</button>` : ''}<button onclick="closeModal()">Отмена</button><button class="primary" onclick="saveLocation('${id||''}')">Сохранить</button></div>`);
+ setTimeout(()=>document.getElementById('locName').focus(),50)
+}
+function saveLocation(id){let name=document.getElementById('locName').value.trim();if(!name)return;let icon=document.getElementById('locIcon').value.trim()||'◈';if(id){let l=data.find(x=>x.id===id);l.name=name;l.icon=icon}else data.push({id:crypto.randomUUID(),name,icon,tasks:[]});closeModal();save()}
+function locationMenu(id){showModal(`<h3>Локация</h3><div class="modal-actions"><button onclick="closeModal();openLocation('${id}')">Переименовать</button><button class="danger" onclick="deleteLocation('${id}')">Удалить</button><button onclick="closeModal()">Закрыть</button></div>`)}
+function deleteLocation(id){if(!confirm('Удалить локацию вместе со всеми её делами?'))return;data=data.filter(l=>l.id!==id);if(current===id)current=null;closeModal();save()}
+function openTask(id=null){
+ const l=data.find(x=>x.id===current),t=id?l.tasks.find(x=>x.id===id):null;editing=id;formPriority=t?.priority||'green';
+ showModal(`<h3>${t?'Изменить дело':'Новое дело'}</h3><label class="label">Что нужно сделать?</label><input class="field" id="taskTitle" maxlength="120" placeholder="Например, заменить масло" value="${t?esc(t.title):''}"><label class="label">Заметка (необязательно)</label><input class="field" id="taskNote" maxlength="180" placeholder="Детали, список покупок…" value="${t?esc(t.note||''):''}"><label class="label">Важность</label><div class="priority-choices"><button id="p-red" class="${formPriority==='red'?'selected':''}" onclick="choosePriority('red')">🔴 Важно</button><button id="p-yellow" class="${formPriority==='yellow'?'selected':''}" onclick="choosePriority('yellow')">🟡 Средне</button><button id="p-green" class="${formPriority==='green'?'selected':''}" onclick="choosePriority('green')">🟢 Обычно</button></div><div class="modal-actions">${t ? `<button class="danger" onclick="deleteTask('${t.id}')">Удалить</button>` : ''}<button onclick="closeModal()">Отмена</button><button class="primary" onclick="saveTask()">Сохранить</button></div>`);
+ setTimeout(()=>document.getElementById('taskTitle').focus(),50)
+}
+function choosePriority(p){formPriority=p;['red','yellow','green'].forEach(x=>document.getElementById('p-'+x).classList.toggle('selected',x===p))}
+function saveTask(){let title=document.getElementById('taskTitle').value.trim();if(!title)return;let note=document.getElementById('taskNote').value.trim(),l=data.find(x=>x.id===current);if(editing){let t=l.tasks.find(x=>x.id===editing);Object.assign(t,{title,note,priority:formPriority})}else l.tasks.push({id:crypto.randomUUID(),title,note,priority:formPriority,done:false,created:Date.now()});closeModal();save()}
+function deleteTask(id){if(!confirm('Удалить это дело?'))return;let l=data.find(x=>x.id===current);l.tasks=l.tasks.filter(t=>t.id!==id);closeModal();save()}
+render();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
